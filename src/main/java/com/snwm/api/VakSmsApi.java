@@ -1,8 +1,10 @@
 package com.snwm.api;
 
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -17,7 +19,6 @@ import com.snwm.api.enums.Status;
 import com.snwm.exception.VakSmsApiException;
 import com.snwm.model.ApiResponse;
 import com.snwm.model.BalanceResponse;
-import com.snwm.model.CountNumberResponse;
 import com.snwm.model.CountryListResponse;
 import com.snwm.model.GetSmsCodeResponse;
 import com.snwm.model.NumberResponse;
@@ -61,6 +62,7 @@ public class VakSmsApi {
         Request request = new Request.Builder()
                 .url(BASE_URL + GET_BALANCE + "?apiKey=" + apiKey)
                 .build();
+
         try (Response response = client.newCall(request).execute()) {
             String responseBody = response.body().string();
             ApiResponse apiResponse = gson.fromJson(responseBody, ApiResponse.class);
@@ -83,7 +85,8 @@ public class VakSmsApi {
      * @param operator Оператор, для которого требуется получить количество
      *                 доступных номеров. Если null, оператор не указывается.
      * @param price    Если true, в ответе будет указана стоимость номера.
-     * @return Объект CountNumberResponse, содержащий информацию о количестве
+     * @return Map<String, Integer> - String = service, Integer = количество
+     *         номеров, содержащий информацию о количестве
      *         доступных номеров.
      * @throws IOException        если произошла ошибка при отправке HTTP-запроса.
      * @throws VakSmsApiException если API вернуло ошибку.
@@ -91,7 +94,7 @@ public class VakSmsApi {
 
     private static final String GET_COUNT_NUMBER = "getCountNumber/";
 
-    public CountNumberResponse getCountNumber(Service service, Country country, Operator operator, Boolean price)
+    public Map<String, Integer> getCountNumber(Service service, Country country, Operator operator, Boolean price)
             throws IOException {
         String url = BASE_URL + GET_COUNT_NUMBER
                 + "?apiKey=" + apiKey
@@ -99,9 +102,11 @@ public class VakSmsApi {
                 + "&country=" + (country == null ? "ru" : country.getCode())
                 + "&operator=" + (operator == null ? "" : operator.getCode())
                 + (price ? "&price=true" : "");
+
         Request request = new Request.Builder()
                 .url(url)
                 .build();
+
         try (Response response = client.newCall(request).execute()) {
             String responseBody = response.body().string();
             ApiResponse apiResponse = gson.fromJson(responseBody, ApiResponse.class);
@@ -109,7 +114,9 @@ public class VakSmsApi {
                 ApiError error = ApiError.fromError(apiResponse.getError());
                 throw new VakSmsApiException(error);
             }
-            return gson.fromJson(responseBody, CountNumberResponse.class);
+            Type type = new TypeToken<Map<String, Integer>>() {
+            }.getType();
+            return gson.fromJson(responseBody, type);
         }
     }
 
@@ -125,9 +132,11 @@ public class VakSmsApi {
 
     public List<Country> getCountryList() throws IOException {
         String url = BASE_URL + GET_COUNTRY_LIST + "?apiKey=" + apiKey;
+
         Request request = new Request.Builder()
                 .url(url)
                 .build();
+
         try (Response response = client.newCall(request).execute()) {
             String responseBody = response.body().string();
             ApiResponse apiResponse = gson.fromJson(responseBody, ApiResponse.class);
@@ -164,15 +173,27 @@ public class VakSmsApi {
 
     private static final String GET_NUMBER = "getNumber/";
 
-    public NumberResponse getNumber(Boolean rent, Country country, Operator operator, Integer softId,
-            Service... services)
+    public NumberResponse getNumber(Boolean rent, Country country, Operator operator, Integer softId, Service service)
             throws IOException {
+        return getNumber(rent, country, operator, softId, new Service[] { service })[0];
+    }
+
+    public List<NumberResponse> getNumber(Boolean rent, Country country, Operator operator, Integer softId,
+            Service service1, Service service2) throws IOException {
+        NumberResponse[] responses = getNumber(rent, country, operator, softId, new Service[] { service1, service2 });
+        return Arrays.asList(responses);
+    }
+
+    private NumberResponse[] getNumber(Boolean rent, Country country, Operator operator, Integer softId,
+            Service[] services) throws IOException {
         if (services.length > 2) {
             throw new IllegalArgumentException("You can specify up to 2 services");
         }
+
         String servicesString = Arrays.stream(services)
                 .map(Service::getCode)
                 .collect(Collectors.joining(","));
+
         String url = BASE_URL + GET_NUMBER
                 + "?apiKey=" + apiKey
                 + "&service=" + servicesString
@@ -180,9 +201,11 @@ public class VakSmsApi {
                 + "&country=" + (country == null ? "ru" : country.getCode())
                 + "&operator=" + (operator == null ? "None" : operator.getCode())
                 + (softId == null ? "" : "&softId=" + softId);
+
         Request request = new Request.Builder()
                 .url(url)
                 .build();
+
         try (Response response = client.newCall(request).execute()) {
             String responseBody = response.body().string();
             ApiResponse apiResponse = gson.fromJson(responseBody, ApiResponse.class);
@@ -191,10 +214,9 @@ public class VakSmsApi {
                 throw new VakSmsApiException(error);
             }
             if (services.length == 1) {
-                return gson.fromJson(responseBody, NumberResponse.class);
+                return new NumberResponse[] { gson.fromJson(responseBody, NumberResponse.class) };
             } else {
-                return gson.fromJson(responseBody, new TypeToken<List<NumberResponse>>() {
-                }.getType());
+                return gson.fromJson(responseBody, NumberResponse[].class);
             }
         }
     }
@@ -213,13 +235,19 @@ public class VakSmsApi {
     private static final String PROLONG_NUMBER = "prolongNumber/";
 
     public ProlongNumberResponse prolongNumber(Service service, String tel) throws IOException {
+        if (service == null || tel == null) {
+            throw new IllegalArgumentException("service and tel cannot be null");
+        }
+
         String url = BASE_URL + PROLONG_NUMBER
                 + "?apiKey=" + apiKey
                 + "&service=" + service.getCode()
                 + "&tel=" + tel;
+
         Request request = new Request.Builder()
                 .url(url)
                 .build();
+
         try (Response response = client.newCall(request).execute()) {
             String responseBody = response.body().string();
             ApiResponse apiResponse = gson.fromJson(responseBody, ApiResponse.class);
@@ -244,13 +272,19 @@ public class VakSmsApi {
     private static final String SET_STATUS = "setStatus/";
 
     public SetStatusResponse setStatus(Status status, String idNum) throws IOException {
+        if (status == null || idNum == null) {
+            throw new IllegalArgumentException("status and idNum cannot be null");
+        }
+
         String url = BASE_URL + SET_STATUS
                 + "?apiKey=" + apiKey
                 + "&status=" + status.getCode()
                 + "&idNum=" + idNum;
+
         Request request = new Request.Builder()
                 .url(url)
                 .build();
+
         try (Response response = client.newCall(request).execute()) {
             String responseBody = response.body().string();
             ApiResponse apiResponse = gson.fromJson(responseBody, ApiResponse.class);
@@ -276,15 +310,22 @@ public class VakSmsApi {
     private static final String GET_SMS_CODE = "getSmsCode/";
 
     public GetSmsCodeResponse getSmsCode(String idNum, Boolean all) throws IOException {
+        if (idNum == null) {
+            throw new IllegalArgumentException("idNum cannot be null");
+        }
+
         String url = BASE_URL + GET_SMS_CODE
                 + "?apiKey=" + apiKey
                 + "&idNum=" + idNum;
+
         if (all != null && all) {
             url += "&all";
         }
+
         Request request = new Request.Builder()
                 .url(url)
                 .build();
+
         try (Response response = client.newCall(request).execute()) {
             String responseBody = response.body().string();
             ApiResponse apiResponse = gson.fromJson(responseBody, ApiResponse.class);
