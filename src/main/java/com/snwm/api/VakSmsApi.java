@@ -120,6 +120,11 @@ public class VakSmsApi {
         }
     }
 
+    public Map<String, Integer> getCountNumber(Service service, Country country, Operator operator)
+            throws IOException {
+        return getCountNumber(service, country, operator, false);
+    }
+
     /**
      * Получает список доступных стран.
      *
@@ -178,9 +183,20 @@ public class VakSmsApi {
         return getNumber(rent, country, operator, softId, new Service[] { service })[0];
     }
 
+    public NumberResponse getNumber(Boolean rent, Country country, Operator operator, Service service)
+            throws IOException {
+        return getNumber(rent, country, operator, null, new Service[] { service })[0];
+    }
+
     public List<NumberResponse> getNumber(Boolean rent, Country country, Operator operator, Integer softId,
             Service service1, Service service2) throws IOException {
         NumberResponse[] responses = getNumber(rent, country, operator, softId, new Service[] { service1, service2 });
+        return Arrays.asList(responses);
+    }
+
+    public List<NumberResponse> getNumber(Boolean rent, Country country, Operator operator,
+            Service service1, Service service2) throws IOException {
+        NumberResponse[] responses = getNumber(rent, country, operator, null, new Service[] { service1, service2 });
         return Arrays.asList(responses);
     }
 
@@ -335,6 +351,10 @@ public class VakSmsApi {
             }
             return gson.fromJson(responseBody, GetSmsCodeResponse.class);
         }
+    }
+
+    public GetSmsCodeResponse getSmsCode(String idNum) throws IOException {
+        return getSmsCode(idNum, null);
     }
 
     /**
