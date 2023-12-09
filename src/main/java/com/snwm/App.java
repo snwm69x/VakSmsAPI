@@ -7,6 +7,5 @@ import com.snwm.api.VakSmsApi;
 public class App {
     public static void main(String[] args) throws IOException {
         VakSmsApi api = VakSmsApi.createWithApiKey("your-api-key-here");
-
     }
 }
