@@ -10,6 +10,7 @@ public enum ApiError {
     BAD_STATUS("badStatus", "Не верный статус"),
     ID_NUM_NOT_FOUND("idNumNotFound", "Не верный ID операции"),
     BAD_SERVICE("badService", "Не верный код сайта, сервиса, соц. сети"),
+    FAILED_REQUEST("failedToSendRequest", "Ошибка отправки запроса"),
     BAD_DATA("badData", "Отправлены неверные данные");
 
     private final String error;

@@ -1,4 +1,4 @@
-package com.snwm.model;
+package com.snwm.model.response;
 
 import java.util.List;
 

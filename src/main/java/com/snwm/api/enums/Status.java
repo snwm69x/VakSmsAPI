@@ -1,5 +1,9 @@
 package com.snwm.api.enums;
 
+// status=send - Еще смс
+// status=end - отмена номера
+// status=bad - номер уже использован, забанен
+
 public enum Status {
     SEND("send"),
     END("end"),

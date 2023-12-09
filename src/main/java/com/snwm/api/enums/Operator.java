@@ -101,7 +101,8 @@ public enum Operator {
     UZMOBILE("uzmobile"),
     VIETNAMOBILE("vietnamobile"),
     VIETTEL("viettel"),
-    VINAPHONE("vinaphone");
+    VINAPHONE("vinaphone"),
+    NONE("");
 
     private final String code;
 

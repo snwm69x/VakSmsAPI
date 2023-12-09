@@ -9,7 +9,7 @@ import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
 import com.google.gson.reflect.TypeToken;
-import com.snwm.model.GetSmsCodeResponse;
+import com.snwm.model.response.GetSmsCodeResponse;
 
 public class GetSmsCodeResponseDeserializer implements JsonDeserializer<GetSmsCodeResponse> {
     @Override

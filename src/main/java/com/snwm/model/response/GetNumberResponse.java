@@ -1,11 +1,10 @@
-package com.snwm.model;
+package com.snwm.model.response;
 
 import lombok.Data;
 
 @Data
-public class NumberResponse {
+public class GetNumberResponse {
     private Long tel;
     private String idNum;
     private String service; // Это поле будет null, если вы запрашиваете только один сервис
-
 }
