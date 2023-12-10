@@ -1,10 +1,10 @@
 # VakSmsAPI
 ### Способы создания клиента для работы с API:
-- 1 вариант (Через статический метод)
+- Sync
 ```java
 VakSmsApi api = VakSmsApi.createWithApiKey("your-api-key");
 ```
-- 2 вариант (Конструктор)
+- Async
 ```java
-VakSmsApi api = new VakSmsApi(new OkHttpClient(), "your-api-key-here");
+VakSmsApiAsync api = VakSmsApiAsync.createWithApiKey("your-api-key");
 ```
