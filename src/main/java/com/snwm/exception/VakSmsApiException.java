@@ -1,6 +1,6 @@
 package com.snwm.exception;
 
-import com.snwm.api.enums.ApiError;
+import com.snwm.enums.ApiError;
 
 public class VakSmsApiException extends RuntimeException {
     private ApiError error;

@@ -1,4 +1,4 @@
-package com.snwm.api.enums;
+package com.snwm.enums;
 
 public enum Service {
     OPEN_AI("dr"),

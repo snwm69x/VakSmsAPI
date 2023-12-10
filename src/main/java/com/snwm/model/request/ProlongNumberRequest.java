@@ -1,6 +1,6 @@
 package com.snwm.model.request;
 
-import com.snwm.api.enums.Service;
+import com.snwm.enums.Service;
 
 import lombok.Builder;
 import lombok.Data;

@@ -1,4 +1,4 @@
-package com.snwm.api.enums;
+package com.snwm.enums;
 
 public enum ApiError {
     API_KEY_NOT_FOUND("apiKeyNotFound", "Неверный API ключ"),

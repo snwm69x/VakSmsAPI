@@ -1,4 +1,4 @@
-package com.snwm.api.enums;
+package com.snwm.enums;
 
 // status=send - Еще смс
 // status=end - отмена номера

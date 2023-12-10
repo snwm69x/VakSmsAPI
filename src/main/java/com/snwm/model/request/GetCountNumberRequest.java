@@ -1,8 +1,8 @@
 package com.snwm.model.request;
 
-import com.snwm.api.enums.Country;
-import com.snwm.api.enums.Operator;
-import com.snwm.api.enums.Service;
+import com.snwm.enums.Country;
+import com.snwm.enums.Operator;
+import com.snwm.enums.Service;
 
 import lombok.Builder;
 import lombok.Data;

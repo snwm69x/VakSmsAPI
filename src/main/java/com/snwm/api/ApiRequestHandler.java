@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.lang.reflect.Type;
 
 import com.google.gson.Gson;
-import com.snwm.api.enums.ApiError;
+import com.snwm.enums.ApiError;
 import com.snwm.exception.VakSmsApiException;
 import lombok.RequiredArgsConstructor;
 import okhttp3.OkHttpClient;

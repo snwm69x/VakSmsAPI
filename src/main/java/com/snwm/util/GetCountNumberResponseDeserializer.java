@@ -9,7 +9,7 @@ import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
-import com.snwm.api.enums.Service;
+import com.snwm.enums.Service;
 import com.snwm.model.response.GetCountNumberResponse;
 
 public class GetCountNumberResponseDeserializer implements JsonDeserializer<GetCountNumberResponse> {

@@ -2,7 +2,7 @@ package com.snwm.model.response;
 
 import java.util.Map;
 
-import com.snwm.api.enums.Service;
+import com.snwm.enums.Service;
 
 import lombok.Data;
 
