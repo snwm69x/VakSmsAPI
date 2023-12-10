@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
+import com.snwm.constant.VakSmsApiConstants;
 import com.snwm.enums.Country;
 import com.snwm.enums.Service;
 import com.snwm.model.GetNumberResponseWrapper;
@@ -38,7 +39,6 @@ import okhttp3.Request;
 
 @RequiredArgsConstructor
 public class VakSmsApi {
-        private static final String BASE_URL = "https://vaksms.ru/api/";
         private final String apiKey;
         private final ApiRequestHandler handler;
 
@@ -50,10 +50,9 @@ public class VakSmsApi {
          * @throws VakSmsApiException если API вернуло ошибку.
          */
 
-        private static final String GET_BALANCE = "getBalance/";
-
         public BalanceResponse getBalance() {
-                StringBuilder urlBuilder = new StringBuilder(BASE_URL + GET_BALANCE + "?apiKey=" + apiKey);
+                StringBuilder urlBuilder = new StringBuilder(
+                                VakSmsApiConstants.BASE_API_URL + VakSmsApiConstants.GET_BALANCE + "?apiKey=" + apiKey);
 
                 Request request = new Request.Builder()
                                 .url(urlBuilder.toString())
@@ -81,10 +80,9 @@ public class VakSmsApi {
          * @throws VakSmsApiException Если API вернуло ошибку.
          */
 
-        private static final String GET_COUNT_NUMBER = "getCountNumber/";
-
         public GetCountNumberResponse getCountNumber(GetCountNumberRequest r) {
-                StringBuilder urlBuilder = new StringBuilder(BASE_URL + GET_COUNT_NUMBER + "?apiKey=" + apiKey);
+                StringBuilder urlBuilder = new StringBuilder(VakSmsApiConstants.BASE_API_URL
+                                + VakSmsApiConstants.GET_COUNT_NUMBER + "?apiKey=" + apiKey);
                 urlBuilder.append("&service=").append(r.getService().getCode())
                                 .append("&country=").append(r.getCountry() == null ? "ru" : r.getCountry().getCode())
                                 .append("&operator=").append(r.getOperator() == null ? "" : r.getOperator().getCode());
@@ -108,10 +106,9 @@ public class VakSmsApi {
          * @throws VakSmsApiException если API вернуло ошибку.
          */
 
-        private static final String GET_COUNTRY_LIST = "getCountryList/";
-
         public List<Country> getCountryList() {
-                StringBuilder urlBuilder = new StringBuilder(BASE_URL + GET_COUNTRY_LIST + "?apiKey=" + apiKey);
+                StringBuilder urlBuilder = new StringBuilder(VakSmsApiConstants.BASE_API_URL
+                                + VakSmsApiConstants.GET_COUNTRY_LIST + "?apiKey=" + apiKey);
 
                 Request request = new Request.Builder()
                                 .url(urlBuilder.toString())
@@ -145,8 +142,6 @@ public class VakSmsApi {
          * @throws IllegalArgumentException Если указано более 2 услуг.
          */
 
-        private static final String GET_NUMBER = "getNumber/";
-
         public GetNumberResponseWrapper getNumber(GetNumberRequest r) {
                 if (r.getServices().length > 2) {
                         throw new IllegalArgumentException("You can specify up to 2 services");
@@ -156,7 +151,8 @@ public class VakSmsApi {
                                 .map(Service::getCode)
                                 .collect(Collectors.joining(","));
 
-                StringBuilder urlBuilder = new StringBuilder(BASE_URL + GET_NUMBER + "?apiKey=" + apiKey);
+                StringBuilder urlBuilder = new StringBuilder(
+                                VakSmsApiConstants.BASE_API_URL + VakSmsApiConstants.GET_NUMBER + "?apiKey=" + apiKey);
                 urlBuilder.append("&service=").append(servicesString)
                                 .append("&rent=").append(r.getRent() ? "true" : "false")
                                 .append("&country=").append(r.getCountry() == null ? "ru" : r.getCountry().getCode())
@@ -192,14 +188,13 @@ public class VakSmsApi {
          * @throws IllegalArgumentException Если услуга или номер телефона не указаны.
          */
 
-        private static final String PROLONG_NUMBER = "prolongNumber/";
-
         public ProlongNumberResponse prolongNumber(ProlongNumberRequest r) {
                 if (r.getService() == null || r.getTel() == null) {
                         throw new IllegalArgumentException("service and tel cannot be null");
                 }
 
-                StringBuilder urlBuilder = new StringBuilder(BASE_URL + PROLONG_NUMBER + "?apiKey=" + apiKey);
+                StringBuilder urlBuilder = new StringBuilder(VakSmsApiConstants.BASE_API_URL
+                                + VakSmsApiConstants.PROLONG_NUMBER + "?apiKey=" + apiKey);
                 urlBuilder.append("&service=").append(r.getService().getCode())
                                 .append("&tel=").append(r.getTel());
 
@@ -225,14 +220,13 @@ public class VakSmsApi {
          *                                  указаны.
          */
 
-        private static final String SET_STATUS = "setStatus/";
-
         public SetStatusResponse setStatus(SetStatusRequest r) {
                 if (r.getStatus() == null || r.getIdNum() == null) {
                         throw new IllegalArgumentException("status and idNum cannot be null");
                 }
 
-                StringBuilder urlBuilder = new StringBuilder(BASE_URL + SET_STATUS + "?apiKey=" + apiKey);
+                StringBuilder urlBuilder = new StringBuilder(
+                                VakSmsApiConstants.BASE_API_URL + VakSmsApiConstants.SET_STATUS + "?apiKey=" + apiKey);
                 urlBuilder.append("&status=").append(r.getStatus().getCode())
                                 .append("&idNum=").append(r.getIdNum());
 
@@ -255,10 +249,9 @@ public class VakSmsApi {
          * @throws VakSmsApiException Если API вернуло ошибку.
          */
 
-        private static final String GET_SMS_CODE = "getSmsCode/";
-
         public GetSmsCodeResponse getSmsCode(GetSmsCodeRequest r) {
-                StringBuilder urlBuilder = new StringBuilder(BASE_URL + GET_SMS_CODE + "?apiKey=" + apiKey);
+                StringBuilder urlBuilder = new StringBuilder(VakSmsApiConstants.BASE_API_URL
+                                + VakSmsApiConstants.GET_SMS_CODE + "?apiKey=" + apiKey);
                 urlBuilder.append("&idNum=").append(r.getIdNum());
 
                 if (r.getAll() != null && r.getAll()) {
